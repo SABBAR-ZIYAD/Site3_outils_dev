@@ -1,4 +1,5 @@
 <?php
+include("SDB.php");
 session_start();
 $error_message = ""; 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -6,7 +7,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = $_POST['email'];
     $paswd = $_POST['password'];
     $cnfpswd = $_POST['confpassword'];
-    
+    $_SESSION['name'] = $_POST['name'];
+    $_SESSION['email'] = $_POST['email'];
+    $_SESSION['pswd'] = $_POST['password'];
+    $_SESSION['cnfpswd'] = $_POST['confpassword'];
     if (empty($paswd) || empty($cnfpswd)) {
         $error_message = "<p style='color: red;'>Please fill in both password fields.</p>";
     } elseif ($paswd !== $cnfpswd) {
@@ -14,13 +18,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } elseif (!preg_match('/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/', $paswd)) {
         $error_message = "<p style='color: red;'>Password must contain at least one lowercase letter, one uppercase letter, and one number.</p>";
     } else {
-        $_SESSION['user_id'] = uniqid();
-        $_SESSION['name'] = $username;
-        $_SESSION['email'] = $email;
+       $hash = password_hash($paswd, PASSWORD_DEFAULT);
+       $sql = $connection->prepare("INSERT INTO users ( name, email, password) VALUES (?,?,?)");
+        $sql->bind_param("sss",$username,$email,$paswd);
+        $sql->execute();
+        $sql->close();
+
+
         header('Location: home.php');
         exit();
     }
+    
 }
+$connection->close();
 ?>
 
 <!DOCTYPE html>

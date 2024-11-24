@@ -1,4 +1,5 @@
 <?php
+  include("SDB.php");
   session_start();
 ?>
 <!DOCTYPE html>
@@ -108,12 +109,11 @@
         <?php
         if (isset($_SESSION['name'])) {
             echo "<span class='navbar-text' style='color: #AAAAAA;'>Hello, " . $_SESSION['name'] . "</span>";
-            echo "<a class='btn btn-get-started ml-2' href='LogIn.php'>Log out</a>"; 
+            echo "<a class='btn btn-get-started ml-2' href='LogOut.php'>Log out</a>"; 
         } else {
             echo "<a class='btn btn-get-started' href='SignUp.php'>Get Started</a>";
         }
         ?>
-
             <a class="nav-link cart-icon" href="#">
                 <span>&#128722;</span> 
                 <span class="cart-cost">$0.00</span> 
